@@ -32,4 +32,5 @@ build/
 *.lib
 Sign_Language/model.p
 Sign_Language/data.pickle
+Sign_Language/data/
 .vercel
