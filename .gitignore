@@ -1,0 +1,32 @@
+# Python virtual environment
+venv/
+Sign_Language/venv/
+Sign_Language/py310env/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# IDE specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment variables
+.env
+
+# Logs
+*.log
+
+# Local development settings
+*.sqlite3
+
+# Large files
+*.pyd
+*.dll
+*.lib 

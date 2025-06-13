@@ -1,0 +1,10 @@
+cd "C:\Users\vijay\OneDrive\Desktop\ASL_Detection_System\Sign_Language"
+
+# Create a new virtual environment using Python 3.10
+& "C:\Users\vijay\AppData\Local\Programs\Python\Python310\python.exe" -m venv py310env
+
+# Activate the environment
+.\py310env\Scripts\Activate.ps1
+
+# Install requirements
+pip install -r requirements.txt

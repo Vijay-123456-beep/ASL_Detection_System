@@ -1,0 +1,75 @@
+🚀 Project Overview
+This project recognizes American Sign Language (ASL) gestures from a live webcam feed and translates them into spoken words or sentences.
+It is designed to help bridge communication gaps for individuals who use sign language.
+🛠️ Tech Stack
+Languages:
+Python
+Key Libraries & Frameworks:
+OpenCV: For video capture and image processing.
+MediaPipe: For hand landmark detection and feature extraction.
+Scikit-learn: For machine learning (Random Forest Classifier).
+Tkinter: For building the graphical user interface (GUI).
+Pyttsx3: For text-to-speech conversion.
+Pillow: For image handling in the GUI. 
+Numpy: For numerical operations.
+Machine Learning Model:
+Random Forest Classifier (from scikit-learn) is used for gesture classification.
+✨ Features
+1. Real-Time Gesture Recognition
+Uses a webcam to capture hand gestures in real time.
+MediaPipe extracts 21 hand landmarks (x, y coordinates), resulting in 42 features per sample.
+The trained Random Forest model predicts the ASL character.
+2. Robust Prediction with Stabilization
+Implements a stabilization buffer to ensure that a gesture is only registered if it is consistently detected over several frames, reducing misclassifications.
+3. Word and Sentence Formation
+Recognized characters are concatenated to form words.
+Special gestures for "space" and "full stop" allow for natural sentence segmentation.
+4. Text-to-Speech Conversion
+Recognized words and sentences are spoken aloud using pyttsx3, making the system accessible for non-signers.
+5. User-Friendly GUI
+Built with Tkinter, the GUI displays:
+The current detected character.
+The current word being formed.
+The full translated sentence.
+Includes buttons for resetting the session, pausing/resuming detection, and speaking the sentence.
+6. Custom Dataset Creation
+Users can collect their own gesture images using collectImgs.py.
+The dataset includes 38 classes: 26 alphabets (A-Z), 10 digits (0-9), space, and full stop.
+7. Flexible Model Training
+Scripts provided for:
+Collecting images (collectImgs.py)
+Creating the dataset (createDataset.py)
+Training the model (trainClassifier.py)
+Users can easily retrain the model with their own data.
+🧩 Codebase Structure
+main.py: Main application. Handles webcam input, gesture recognition, GUI, and text-to-speech.
+collectImgs.py: Script to collect gesture images for each class using the webcam.
+createDataset.py: Extracts hand landmarks from images and creates a dataset for training.
+trainClassifier.py: Trains a Random Forest model on the extracted features and saves it.
+model.p: Pickled trained model.
+requirements.txt: Lists all Python dependencies.
+README.md: Project documentation and usage instructions.
+ReadmeAssets/: Contains images for documentation.
+logo.png: Logo for the GUI.
+🧠 How It Works
+Data Collection:
+Run collectImgs.py to capture images for each gesture class.
+Feature Extraction:
+createDataset.py uses MediaPipe to extract hand landmarks from images and saves them as features.
+Model Training:
+trainClassifier.py trains a Random Forest Classifier on the features and saves the model.
+Real-Time Inference:
+main.py loads the model, processes webcam frames, predicts gestures, and updates the GUI and speech output.
+🔮 Future Enhancements (from README)
+Support for dynamic (motion-based) gestures.
+Additional sign languages.
+Mobile or web deployment.
+Improved accuracy with deep learning.
+📦 Dependencies (from requirements.txt)
+opencv-python
+mediapipe
+scikit-learn
+numpy
+pyttsx3
+Pillow
+If you need a more granular breakdown of any specific part (e.g., model details, GUI logic, or dataset structure), let me know
