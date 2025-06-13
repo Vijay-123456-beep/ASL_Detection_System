@@ -29,4 +29,7 @@ build/
 # Large files
 *.pyd
 *.dll
-*.lib 
+*.lib
+Sign_Language/model.p
+Sign_Language/data.pickle
+.vercel
