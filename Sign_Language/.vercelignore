@@ -1,0 +1,5 @@
+data/
+py310env/
+*.p
+*.pickle
+ReadmeAssets/
