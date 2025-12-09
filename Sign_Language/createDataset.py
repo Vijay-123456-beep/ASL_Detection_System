@@ -1,58 +1,71 @@
 import os
 import pickle
-
-import mediapipe as mp
 import cv2
+import mediapipe as mp
+import numpy as np
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
 
-# Mediapipe setup
-mp_hands = mp.solutions.hands
-hands = mp_hands.Hands(static_image_mode=True, min_detection_confidence=0.3)
-
 DATA_DIR = './data'
-EXPECTED_FEATURES = 42  # Expected number of features (21 landmarks × 2 coordinates)
+EXPECTED_FEATURES = 42  # 21 landmarks × 2 coords
+
+# Mediapipe Hands
+mp_hands = mp.solutions.hands
+hands = mp_hands.Hands(
+    static_image_mode=True,
+    min_detection_confidence=0.3,
+    max_num_hands=1
+)
 
 data = []
 labels = []
 
-for dir_ in os.listdir(DATA_DIR):
-    for img_path in os.listdir(os.path.join(DATA_DIR, dir_)):
-        data_aux = []
+def extract_features(landmarks):
+    x = [lm.x for lm in landmarks.landmark]
+    y = [lm.y for lm in landmarks.landmark]
 
-        x_ = []
-        y_ = []
+    min_x, max_x = min(x), max(x)
+    min_y, max_y = min(y), max(y)
 
-        # Read image
-        img = cv2.imread(os.path.join(DATA_DIR, dir_, img_path))
+    width = max_x - min_x or 1
+    height = max_y - min_y or 1
+
+    feat = []
+    for i in range(21):
+        feat.append((x[i] - min_x) / width)
+        feat.append((y[i] - min_y) / height)
+
+    return feat
+
+for folder in os.listdir(DATA_DIR):
+    class_dir = os.path.join(DATA_DIR, folder)
+    if not os.path.isdir(class_dir):
+        continue
+
+    print("Processing:", folder)
+
+    for img_name in os.listdir(class_dir):
+        img_path = os.path.join(class_dir, img_name)
+        img = cv2.imread(img_path)
+
+        if img is None:
+            continue
+
         img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-
-        # Process image with Mediapipe Hands
         results = hands.process(img_rgb)
-        if results.multi_hand_landmarks:
-            for hand_landmarks in results.multi_hand_landmarks:
-                for i in range(len(hand_landmarks.landmark)):
-                    x = hand_landmarks.landmark[i].x
-                    y = hand_landmarks.landmark[i].y
 
-                    x_.append(x)
-                    y_.append(y)
+        if not results.multi_hand_landmarks:
+            continue
 
-                for i in range(len(hand_landmarks.landmark)):
-                    x = hand_landmarks.landmark[i].x
-                    y = hand_landmarks.landmark[i].y
-                    data_aux.append(x - min(x_))
-                    data_aux.append(y - min(y_))
+        features = extract_features(results.multi_hand_landmarks[0])
 
-            # Check if data is complete before appending
-            if len(data_aux) == EXPECTED_FEATURES:
-                data.append(data_aux)
-                labels.append(dir_)
-            else:
-                print(f"Skipped image {img_path} in {dir_}: incomplete data with {len(data_aux)} features.")
+        if len(features) == EXPECTED_FEATURES:
+            data.append(features)
+            labels.append(folder)
 
-# Save the dataset as a pickle file
-with open('data.pickle', 'wb') as f:
-    pickle.dump({'data': data, 'labels': labels}, f)
+print("Total samples:", len(data))
 
-print(f"Dataset saved. Total samples: {len(data)}")
+with open("data.pickle", "wb") as f:
+    pickle.dump({"data": data, "labels": labels}, f)
+
+print("Dataset saved → data.pickle")
